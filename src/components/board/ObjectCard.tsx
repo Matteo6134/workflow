@@ -5,6 +5,7 @@
 import type { ReactNode } from "react";
 
 import { Card } from "./Card";
+import { CardIcon } from "./CardIcon";
 import type { Point } from "@/lib/board/boardState";
 import type { SceneItem } from "@/lib/scene/sceneItem";
 
@@ -23,6 +24,10 @@ type ObjectCardProps = {
   readonly onRemove: (itemId: string) => void;
   /** The "+" action menu rendered in this card's header. */
   readonly menu?: ReactNode;
+  readonly onMeasure?: (
+    id: string,
+    size: { width: number; height: number },
+  ) => void;
 };
 
 /**
@@ -45,6 +50,7 @@ export function ObjectCard({
   onToggleGhost,
   onRemove,
   menu,
+  onMeasure,
 }: ObjectCardProps) {
   const dims = item.dimensionsMm;
 
@@ -54,7 +60,7 @@ export function ObjectCard({
       position={position}
       zoom={zoom}
       title={item.name}
-      badge={item.kind === "product" ? "product" : "part"}
+      icon={<CardIcon kind={item.kind === "product" ? "product" : "part"} />}
       selected={selected}
       onMove={onMove}
       onFocus={(id) => {
@@ -64,6 +70,7 @@ export function ObjectCard({
       onDoubleClick={() => onExpand(item.id)}
       onRemove={() => onRemove(item.id)}
       menu={menu}
+      onMeasure={onMeasure}
     >
       <button
         type="button"
@@ -82,14 +89,14 @@ export function ObjectCard({
             draggable={false}
           />
         ) : (
-          <div className="flex aspect-square w-full items-center justify-center text-[10px] text-faint">
+          <div className="flex aspect-square w-full items-center justify-center text-[13px] text-faint">
             no preview
           </div>
         )}
       </button>
 
       {dims ? (
-        <p className="mt-2 font-mono text-[9.5px] text-faint">
+        <p className="mt-2 font-mono text-[12px] text-faint">
           {fmt(dims.x)} x {fmt(dims.y)} x {fmt(dims.z)} mm
         </p>
       ) : null}
@@ -109,7 +116,7 @@ export function ObjectCard({
         <button
           type="button"
           onClick={() => onExpand(item.id)}
-          className="ml-auto rounded-md bg-raised-hi px-2 py-1 text-[10px] font-medium text-text transition-colors hover:bg-accent hover:text-accent-ink"
+          className="ml-auto rounded-md bg-raised-hi px-2 py-1 text-[13px] font-medium text-text transition-colors hover:bg-accent hover:text-accent-ink"
         >
           Position
         </button>
@@ -135,7 +142,7 @@ function SmallButton({
       onClick={onClick}
       title={title ?? label}
       aria-pressed={active}
-      className={`rounded-md px-2 py-1 text-[10px] transition-colors ${
+      className={`rounded-md px-2 py-1 text-[13px] transition-colors ${
         active
           ? "bg-[rgba(199,247,81,0.16)] text-accent"
           : "bg-raised text-faint hover:text-text"

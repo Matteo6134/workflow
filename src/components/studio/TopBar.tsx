@@ -10,12 +10,12 @@ export function TopBar({ status }: TopBarProps) {
   return (
     <header className="glass pointer-events-auto flex h-11 items-center justify-between gap-3 rounded-xl px-3">
       <div className="flex items-center gap-2.5">
-        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent text-[11px] font-bold text-accent-ink">
+        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent text-[14px] font-bold text-accent-ink">
           S
         </span>
         <div className="leading-none">
-          <p className="text-[12.5px] font-semibold text-text">Studio</p>
-          <p className="mt-0.5 text-[9.5px] text-faint">
+          <p className="text-[16px] font-semibold text-text">Studio</p>
+          <p className="mt-0.5 text-[12px] text-faint">
             3D to render to Instagram
           </p>
         </div>
@@ -59,7 +59,7 @@ function Pill({
   return (
     <span
       title={detail ?? label}
-      className="flex items-center gap-1.5 rounded-full border border-line bg-raised px-2.5 py-1 text-[10.5px] text-dim"
+      className="flex items-center gap-1.5 rounded-full border border-line bg-raised px-2.5 py-1 text-[13.5px] text-dim"
     >
       <span
         className={`h-1.5 w-1.5 shrink-0 rounded-full ${

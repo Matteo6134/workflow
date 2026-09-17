@@ -5,6 +5,7 @@
 import type { ReactNode } from "react";
 
 import { Card } from "./Card";
+import { CardIcon } from "./CardIcon";
 import type { Point } from "@/lib/board/boardState";
 import type { RenderedImage } from "@/lib/types";
 
@@ -18,6 +19,10 @@ type RenderCardProps = {
   readonly onMove: (id: string, position: Point) => void;
   readonly onFocus: (id: string) => void;
   readonly menu?: ReactNode;
+  readonly onMeasure?: (
+    id: string,
+    size: { width: number; height: number },
+  ) => void;
 };
 
 /**
@@ -36,6 +41,7 @@ export function RenderCard({
   onMove,
   onFocus,
   menu,
+  onMeasure,
 }: RenderCardProps) {
   return (
     <Card
@@ -43,14 +49,16 @@ export function RenderCard({
       position={position}
       zoom={zoom}
       title="Renders"
+      icon={<CardIcon kind="renders" />}
       badge={results.length ? `${results.length}` : undefined}
-      width={300}
+      width={380}
       onMove={onMove}
       onFocus={onFocus}
       menu={menu}
+      onMeasure={onMeasure}
     >
       {results.length === 0 && !rendering ? (
-        <p className="py-6 text-center text-[11px] leading-relaxed text-faint">
+        <p className="py-6 text-center text-[14px] leading-relaxed text-faint">
           Nothing rendered yet.
           <br />
           Stage your model, describe it, then hit Render.
@@ -79,7 +87,7 @@ export function RenderCard({
                 className="aspect-square w-full object-cover"
                 draggable={false}
               />
-              <span className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-black/60 text-[10px] font-medium text-white group-hover:flex">
+              <span className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-black/60 text-[13px] font-medium text-white group-hover:flex">
                 Open
               </span>
             </button>

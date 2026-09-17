@@ -31,7 +31,7 @@ export function ViewBar({ onFrame, disabled }: ViewBarProps) {
           disabled={disabled}
           onClick={() => onFrame(direction)}
           title={`${VIEW_LABELS[direction]} view`}
-          className="rounded-lg px-2.5 py-1.5 text-[10.5px] font-medium text-dim transition-colors hover:bg-raised-hi hover:text-text disabled:cursor-not-allowed disabled:opacity-35"
+          className="rounded-lg px-2.5 py-1.5 text-[13.5px] font-medium text-dim transition-colors hover:bg-raised-hi hover:text-text disabled:cursor-not-allowed disabled:opacity-35"
         >
           {VIEW_LABELS[direction]}
         </button>

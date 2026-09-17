@@ -58,7 +58,7 @@ export function TransformPanel({
             type="button"
             onClick={() => onModeChange(option.id)}
             title={`${option.label} (${option.key})`}
-            className={`flex-1 rounded-md px-2 py-1.5 text-[11px] font-medium transition-colors ${
+            className={`flex-1 rounded-md px-2 py-1.5 text-[14px] font-medium transition-colors ${
               option.id === mode
                 ? "bg-accent text-accent-ink"
                 : "bg-raised text-dim hover:bg-raised-hi hover:text-text"
@@ -87,7 +87,7 @@ export function TransformPanel({
 
       <div>
         <div className="mb-1.5 flex items-baseline justify-between">
-          <span className="text-[10.5px] font-medium uppercase tracking-wide text-dim">
+          <span className="text-[13.5px] font-medium tracking-[0.01em] text-dim">
             Orient
           </span>
         </div>
@@ -97,7 +97,7 @@ export function TransformPanel({
               key={preset.label}
               type="button"
               onClick={() => onChange({ ...transform, rotation: preset.rotation })}
-              className="rounded-md bg-raised px-1.5 py-1.5 text-[10.5px] text-dim transition-colors hover:bg-raised-hi hover:text-text"
+              className="rounded-md bg-raised px-1.5 py-1.5 text-[13.5px] text-dim transition-colors hover:bg-raised-hi hover:text-text"
             >
               {preset.label}
             </button>
@@ -116,7 +116,7 @@ export function TransformPanel({
       {/* Scaling a catalogue part breaks the dimensional accuracy it exists
           for, so say so rather than letting it pass silently. */}
       {item.kind === "component" && !isIdentity(item.scale) ? (
-        <p className="rounded-md border border-danger/40 bg-danger/10 px-2 py-1.5 text-[10px] leading-snug text-danger">
+        <p className="rounded-md border border-danger/40 bg-danger/10 px-2 py-1.5 text-[13px] leading-snug text-danger">
           This part is no longer at its real size
           {scaleIsUniform ? ` (${item.scale.x}x)` : ""}. Reset scale to 1 to keep
           the fit-check honest.
@@ -132,7 +132,7 @@ export function TransformPanel({
             scale: { x: 1, y: 1, z: 1 },
           })
         }
-        className="w-full rounded-md border border-line px-2 py-1.5 text-[11px] text-dim transition-colors hover:border-line-strong hover:text-text"
+        className="w-full rounded-md border border-line px-2 py-1.5 text-[14px] text-dim transition-colors hover:border-line-strong hover:text-text"
       >
         Reset transform
       </button>
@@ -152,15 +152,15 @@ function AxisRow({ label, unit, value, step, onChange }: AxisRowProps) {
   return (
     <div>
       <div className="mb-1.5 flex items-baseline justify-between">
-        <span className="text-[10.5px] font-medium uppercase tracking-wide text-dim">
+        <span className="text-[13.5px] font-medium tracking-[0.01em] text-dim">
           {label}
         </span>
-        <span className="font-mono text-[9.5px] text-faint">{unit}</span>
+        <span className="font-mono text-[12px] text-faint">{unit}</span>
       </div>
       <div className="grid grid-cols-3 gap-1">
         {(["x", "y", "z"] as const).map((axis) => (
           <div key={axis} className="relative">
-            <span className="pointer-events-none absolute left-1.5 top-1/2 -translate-y-1/2 font-mono text-[9px] uppercase text-faint">
+            <span className="pointer-events-none absolute left-1.5 top-1/2 -translate-y-1/2 font-mono text-[12px] uppercase text-faint">
               {axis}
             </span>
             <input

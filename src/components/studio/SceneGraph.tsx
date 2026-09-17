@@ -21,7 +21,7 @@ export function SceneGraph({
 }: SceneGraphProps) {
   if (items.length === 0) {
     return (
-      <p className="px-1 text-[11px] leading-relaxed text-faint">
+      <p className="px-1 text-[14px] leading-relaxed text-faint">
         Nothing on the stage yet. Import your product, then add electronics from
         the library below.
       </p>
@@ -57,14 +57,14 @@ export function SceneGraph({
                 className="min-w-0 flex-1 text-left"
               >
                 <span
-                  className={`block truncate text-[12px] ${
+                  className={`block truncate text-[15px] ${
                     item.visible ? "text-text" : "text-faint line-through"
                   }`}
                   title={item.name}
                 >
                   {item.name}
                 </span>
-                <span className="block truncate font-mono text-[9.5px] text-faint">
+                <span className="block truncate font-mono text-[12px] text-faint">
                   {item.kind === "product" ? "product" : "component"}
                   {item.dimensionsMm
                     ? ` · ${fmt(item.dimensionsMm.x)}x${fmt(item.dimensionsMm.y)}x${fmt(
@@ -114,7 +114,7 @@ function fmt(value: number): string {
 
 function EyeIcon({ open }: { readonly open: boolean }) {
   return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden>
       {open ? (
         <>
           <path
@@ -141,11 +141,11 @@ function EyeIcon({ open }: { readonly open: boolean }) {
 
 function GhostIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden>
       <rect
         x="2.5"
         y="2.5"
-        width="11"
+        width="16"
         height="11"
         rx="2"
         stroke="currentColor"
@@ -159,7 +159,7 @@ function GhostIcon() {
 
 function TrashIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden>
       <path
         d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5 5 13h6l.5-8.5"
         stroke="currentColor"

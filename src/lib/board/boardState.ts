@@ -31,8 +31,8 @@ export const MIN_ZOOM = 0.25;
 export const MAX_ZOOM = 2.5;
 
 /** Card footprint in board units, used for auto-placement. */
-export const CARD_WIDTH = 260;
-export const CARD_HEIGHT = 300;
+export const CARD_WIDTH = 320;
+export const CARD_HEIGHT = 360;
 const GAP = 36;
 
 export const INITIAL_BOARD: BoardState = {

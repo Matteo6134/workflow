@@ -63,13 +63,13 @@ export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
         // The header is a drag handle; keep a menu click from starting a drag.
         onPointerDown={(event) => event.stopPropagation()}
         onClick={() => setOpen((value) => !value)}
-        className={`flex h-5 w-5 items-center justify-center rounded-md transition-colors ${
+        className={`flex h-7 w-7 items-center justify-center rounded-md transition-colors ${
           open
             ? "bg-accent text-accent-ink"
             : "bg-raised-hi text-dim hover:bg-accent hover:text-accent-ink"
         }`}
       >
-        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
           <path
             d="M8 3.5v9M3.5 8h9"
             stroke="currentColor"
@@ -84,7 +84,7 @@ export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
           {...{ [PANEL_ATTR]: "true" }}
           // Capped so a long action list scrolls inside the popover rather
           // than overflowing the card.
-          className="glass absolute right-0 top-6 z-30 max-h-[320px] w-[208px] overflow-y-auto rounded-lg p-1.5"
+          className="glass absolute right-0 top-9 z-30 max-h-[320px] w-[250px] overflow-y-auto rounded-lg p-1.5"
           onPointerDown={(event) => event.stopPropagation()}
         >
           {groups.map((group, groupIndex) => (
@@ -92,7 +92,7 @@ export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
               key={group.label}
               className={groupIndex > 0 ? "mt-1.5 border-t border-line pt-1.5" : ""}
             >
-              <p className="px-1.5 pb-1 text-[9px] font-semibold uppercase tracking-[0.08em] text-faint">
+              <p className="px-1.5 pb-1 text-[12px] font-semibold tracking-[0.01em] text-faint">
                 {group.label}
               </p>
 
@@ -108,7 +108,7 @@ export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
                         action.onSelect();
                         setOpen(false);
                       }}
-                      className="rounded-md bg-raised px-2 py-1 text-[10.5px] text-dim transition-colors hover:bg-accent hover:text-accent-ink disabled:opacity-40"
+                      className="rounded-md bg-raised px-2 py-1 text-[13.5px] text-dim transition-colors hover:bg-accent hover:text-accent-ink disabled:opacity-40"
                     >
                       {action.label}
                     </button>
@@ -131,11 +131,11 @@ export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
                         : "text-text hover:bg-raised-hi"
                     }`}
                   >
-                    <span className="block text-[11.5px] leading-tight">
+                    <span className="block text-[15px] leading-tight">
                       {action.label}
                     </span>
                     {action.hint ? (
-                      <span className="mt-0.5 block text-[9.5px] leading-tight text-faint">
+                      <span className="mt-0.5 block text-[12px] leading-tight text-faint">
                         {action.hint}
                       </span>
                     ) : null}

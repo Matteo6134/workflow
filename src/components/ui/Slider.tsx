@@ -28,13 +28,13 @@ export function Slider({
   return (
     <label className={`block ${disabled ? "opacity-50" : ""}`}>
       <div className="flex items-baseline justify-between gap-2">
-        <span className="text-[13px] font-medium text-text">{label}</span>
-        <span className="font-mono text-[11px] text-dim tabular-nums">
+        <span className="text-[16px] font-medium text-text">{label}</span>
+        <span className="font-mono text-[14px] text-dim tabular-nums">
           {format(value)}
         </span>
       </div>
 
-      {hint ? <p className="mt-0.5 text-[11px] leading-snug text-faint">{hint}</p> : null}
+      {hint ? <p className="mt-0.5 text-[14px] leading-snug text-faint">{hint}</p> : null}
 
       <input
         type="range"

@@ -33,10 +33,10 @@ export function PresetPicker({ presets, selectedId, onSelect }: PresetPickerProp
                 : "border-line bg-surface-2 hover:border-surface-3 hover:bg-surface-3"
             }`}
           >
-            <span className="block text-[12px] font-medium leading-tight text-text">
+            <span className="block text-[15px] font-medium leading-tight text-text">
               {preset.label}
             </span>
-            <span className="mt-0.5 block text-[10px] leading-tight text-faint">
+            <span className="mt-0.5 block text-[13px] leading-tight text-faint">
               {preset.hint}
             </span>
           </button>

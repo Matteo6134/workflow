@@ -40,7 +40,7 @@ export function ComponentLibrary({ onAdd, loadingId }: ComponentLibraryProps) {
             key={category}
             type="button"
             onClick={() => setActive(category)}
-            className={`rounded-full px-2.5 py-1 text-[10.5px] font-medium transition-colors ${
+            className={`rounded-full px-2.5 py-1 text-[13.5px] font-medium transition-colors ${
               category === active
                 ? "bg-accent text-accent-ink"
                 : "bg-raised text-dim hover:bg-raised-hi hover:text-text"
@@ -96,10 +96,10 @@ function PartRow({ spec, expanded, onToggle, onAdd, loading }: PartRowProps) {
           className="min-w-0 flex-1 text-left"
           title={spec.summary}
         >
-          <span className="block truncate text-[12px] font-medium text-text">
+          <span className="block truncate text-[15px] font-medium text-text">
             {spec.name}
           </span>
-          <span className="flex items-center gap-1.5 font-mono text-[9.5px] text-faint">
+          <span className="flex items-center gap-1.5 font-mono text-[12px] text-faint">
             {spec.size.x} x {spec.size.y} x {spec.size.z} mm
             {/* Real manufacturer CAD vs a dimensionally-accurate stand-in -
                 the user should always know which one they placed. */}
@@ -125,7 +125,7 @@ function PartRow({ spec, expanded, onToggle, onAdd, loading }: PartRowProps) {
               ? `Download the real CAD model of ${spec.name}`
               : `Add ${spec.name} to the stage`
           }
-          className="shrink-0 rounded-md bg-raised-hi px-2 py-1 text-[11px] font-medium text-text transition-colors hover:bg-accent hover:text-accent-ink disabled:opacity-50"
+          className="shrink-0 rounded-md bg-raised-hi px-2 py-1 text-[14px] font-medium text-text transition-colors hover:bg-accent hover:text-accent-ink disabled:opacity-50"
         >
           {loading ? "..." : "Add"}
         </button>
@@ -136,8 +136,8 @@ function PartRow({ spec, expanded, onToggle, onAdd, loading }: PartRowProps) {
           {specParams.map((param) => (
             <label key={param.key} className="block">
               <div className="flex items-baseline justify-between">
-                <span className="text-[10.5px] text-dim">{param.label}</span>
-                <span className="font-mono text-[10px] text-text tabular-nums">
+                <span className="text-[13.5px] text-dim">{param.label}</span>
+                <span className="font-mono text-[13px] text-text tabular-nums">
                   {params[param.key]}
                   {param.unit}
                 </span>
@@ -158,7 +158,7 @@ function PartRow({ spec, expanded, onToggle, onAdd, loading }: PartRowProps) {
               />
             </label>
           ))}
-          <p className="text-[10px] leading-snug text-faint">{spec.summary}</p>
+          <p className="text-[13px] leading-snug text-faint">{spec.summary}</p>
         </div>
       ) : null}
     </li>

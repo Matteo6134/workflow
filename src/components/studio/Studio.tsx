@@ -15,6 +15,8 @@ import { ObjectCard } from "@/components/board/ObjectCard";
 import { LookCard } from "@/components/board/LookCard";
 import { RenderCard } from "@/components/board/RenderCard";
 import { CardMenu, type CardActionGroup } from "@/components/board/CardMenu";
+import { Connectors } from "@/components/board/Connectors";
+import type { Connection, Rect } from "@/lib/board/connections";
 import { VIEW_LABELS, type ViewDirection } from "@/lib/three/framing";
 import { TopBar } from "./TopBar";
 import { SceneEditor } from "./SceneEditor";
@@ -31,7 +33,7 @@ const RENDER_CARD_ID = "renders";
  * deriving them from a single CARD_WIDTH made the wider Look card overlap its
  * neighbour.
  */
-const COLUMN_X = [80, 420, 790] as const;
+const COLUMN_X = [80, 520, 1020] as const;
 
 /** Offered on every card, so the render angle is one click away. */
 const VIEW_ORDER: readonly ViewDirection[] = [
@@ -58,6 +60,7 @@ export function Studio() {
     zoom: 1,
   });
   const [positions, setPositions] = useState<Record<string, Point>>({});
+  const [sizes, setSizes] = useState<Record<string, { width: number; height: number }>>({});
   const [order, setOrder] = useState<readonly string[]>([]);
   const [editorOpen, setEditorOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
@@ -73,22 +76,60 @@ export function Studio() {
       ? "Describe what the product is."
       : (studio.status?.backendError ?? null);
 
-  /** Assigns a slot the first time a card is seen, then remembers it. */
+  /**
+   * Resolved position of every card: the dragged position when there is one,
+   * otherwise its default slot.
+   *
+   * Computed once and shared by the cards AND the connector wires. Reading
+   * `positions` directly for the wires was wrong, because a card that has never
+   * been dragged has no entry there, so every wire was silently skipped.
+   */
+  const layout = useMemo(() => {
+    const out: Record<string, Point> = {};
+
+    const columnX = (column: number) =>
+      COLUMN_X[column] ?? COLUMN_X[COLUMN_X.length - 1];
+
+    // Object cards stack using their MEASURED heights. A fixed step made tall
+    // cards overlap the one below, hiding their controls.
+    let stackY = 80;
+    for (const item of studio.scene.items) {
+      out[item.id] = positions[item.id] ?? { x: columnX(0), y: stackY };
+      stackY += (sizes[item.id]?.height ?? CARD_HEIGHT) + GAP;
+    }
+
+    out[LOOK_CARD_ID] = positions[LOOK_CARD_ID] ?? { x: columnX(1), y: 80 };
+    out[RENDER_CARD_ID] = positions[RENDER_CARD_ID] ?? { x: columnX(2), y: 80 };
+    return out;
+  }, [positions, studio.scene.items, sizes]);
+
   const positionFor = useCallback(
-    (id: string, index: number, column: number): Point => {
-      const existing = positions[id];
-      if (existing) return existing;
-      return {
+    (id: string, index: number, column: number): Point =>
+      layout[id] ?? {
         x: COLUMN_X[column] ?? COLUMN_X[COLUMN_X.length - 1],
         y: 80 + index * (CARD_HEIGHT + GAP),
-      };
-    },
-    [positions],
+      },
+    [layout],
   );
 
   const moveCard = useCallback((id: string, position: Point) => {
     setPositions((current) => ({ ...current, [id]: position }));
   }, []);
+
+  const measureCard = useCallback(
+    (id: string, size: { width: number; height: number }) => {
+      setSizes((current) => {
+        const known = current[id];
+        // Bail on an unchanged size: ResizeObserver fires on every layout pass
+        // and a fresh object each time would re-render the whole board.
+        if (known && known.width === size.width && known.height === size.height) {
+          return current;
+        }
+        return { ...current, [id]: size };
+      });
+    },
+    [],
+  );
 
   const focusCard = useCallback((id: string) => {
     setOrder((current) => [...current.filter((item) => item !== id), id]);
@@ -108,7 +149,7 @@ export function Studio() {
   /** Pans the board so a card is centred, then raises it. */
   const bringIntoView = useCallback(
     (id: string, fallback: Point) => {
-      const target = positions[id] ?? fallback;
+      const target = layout[id] ?? fallback;
       setViewport((current) => ({
         ...current,
         pan: {
@@ -118,7 +159,7 @@ export function Studio() {
       }));
       focusCard(id);
     },
-    [positions, focusCard],
+    [layout, focusCard],
   );
 
   const openEditor = useCallback(
@@ -167,6 +208,35 @@ export function Studio() {
     ],
   };
 
+  /** Card rectangles in board space, for anchoring the connector wires. */
+  const rects = useMemo(() => {
+    const out: Record<string, Rect> = {};
+    for (const [id, size] of Object.entries(sizes)) {
+      const position = layout[id];
+      if (!position) continue;
+      out[id] = { x: position.x, y: position.y, ...size };
+    }
+    return out;
+  }, [sizes, layout]);
+
+  /**
+   * The pipeline, as wires: everything on the stage feeds the Look card, which
+   * feeds the renders. A hidden object is wired but dimmed, so you can see it
+   * is excluded rather than wondering where it went.
+   */
+  const connections = useMemo<readonly Connection[]>(() => {
+    const fromObjects = studio.scene.items.map((item) => ({
+      id: `${item.id}->look`,
+      from: item.id,
+      to: LOOK_CARD_ID,
+      muted: !item.visible,
+    }));
+    return [
+      ...fromObjects,
+      { id: "look->renders", from: LOOK_CARD_ID, to: RENDER_CARD_ID },
+    ];
+  }, [studio.scene.items]);
+
   // Cards paint in focus order, so a raised card sits above its neighbours.
   const sortedItems = useMemo(() => {
     const rank = (id: string) => order.indexOf(id);
@@ -181,6 +251,12 @@ export function Studio() {
         onZoom={zoomAt}
         onBackgroundClick={() => studio.select(null)}
       >
+        <Connectors
+          connections={connections}
+          rects={rects}
+          active={studio.rendering}
+        />
+
         {sortedItems.map((item) => (
           <ObjectCard
             key={item.id}
@@ -200,6 +276,7 @@ export function Studio() {
             onToggleVisible={studio.toggleVisible}
             onToggleGhost={studio.toggleGhost}
             onRemove={studio.remove}
+            onMeasure={measureCard}
             menu={
               <CardMenu
                 groups={[
@@ -264,6 +341,7 @@ export function Studio() {
           blockedReason={blockedReason}
           onMove={moveCard}
           onFocus={focusCard}
+          onMeasure={measureCard}
           menu={
             <CardMenu
               groups={[
@@ -294,6 +372,7 @@ export function Studio() {
           onOpen={setPreview}
           onMove={moveCard}
           onFocus={focusCard}
+          onMeasure={measureCard}
           menu={
             <CardMenu
               groups={[
@@ -335,13 +414,13 @@ export function Studio() {
 
         {studio.error ? (
           <div className="glass pointer-events-auto mx-auto max-w-lg rounded-xl border-danger/40 px-3 py-2">
-            <p className="text-[11.5px] leading-snug text-danger">
+            <p className="text-[15px] leading-snug text-danger">
               {studio.error}
             </p>
             <button
               type="button"
               onClick={() => studio.setError(null)}
-              className="mt-1 text-[10px] text-faint underline transition-colors hover:text-text"
+              className="mt-1 text-[13px] text-faint underline transition-colors hover:text-text"
             >
               Dismiss
             </button>

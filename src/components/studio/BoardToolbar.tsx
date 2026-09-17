@@ -52,10 +52,10 @@ export function BoardToolbar({
           className="glass pointer-events-auto max-h-[52vh] w-[330px] overflow-y-auto rounded-xl p-3"
         >
           <div className="mb-2.5 flex items-baseline justify-between">
-            <h2 className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-dim">
+            <h2 className="text-[13.5px] font-semibold tracking-[0.01em] text-dim">
               Electronics
             </h2>
-            <span className="text-[9.5px] text-faint">
+            <span className="text-[12px] text-faint">
               real manufacturer CAD
             </span>
           </div>
@@ -88,7 +88,7 @@ export function BoardToolbar({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={loadingModel}
-          className="rounded-lg bg-accent px-3 py-2 text-[12px] font-semibold text-accent-ink transition-all hover:brightness-110 disabled:opacity-50"
+          className="rounded-lg bg-accent px-3 py-2 text-[15px] font-semibold text-accent-ink transition-all hover:brightness-110 disabled:opacity-50"
         >
           {loadingModel ? "Reading..." : "Add 3D file"}
         </button>
@@ -100,7 +100,7 @@ export function BoardToolbar({
               type="button"
               onClick={() => setUnit(option)}
               title={`Treat imported files as ${option}`}
-              className={`rounded-md px-1.5 py-1 text-[10px] font-medium transition-colors ${
+              className={`rounded-md px-1.5 py-1 text-[13px] font-medium transition-colors ${
                 option === unit
                   ? "bg-accent text-accent-ink"
                   : "text-faint hover:text-text"
@@ -124,7 +124,7 @@ export function BoardToolbar({
         <Divider />
 
         <ToolButton onClick={() => onZoom(1 / 1.2)}>-</ToolButton>
-        <span className="min-w-[38px] text-center font-mono text-[10px] text-faint tabular-nums">
+        <span className="min-w-[38px] text-center font-mono text-[13px] text-faint tabular-nums">
           {Math.round(zoom * 100)}%
         </span>
         <ToolButton onClick={() => onZoom(1.2)}>+</ToolButton>
@@ -153,7 +153,7 @@ function ToolButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-lg px-2.5 py-2 text-[11.5px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-35 ${
+      className={`rounded-lg px-2.5 py-2 text-[15px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-35 ${
         active
           ? "bg-[rgba(199,247,81,0.16)] text-accent"
           : "text-dim hover:bg-raised-hi hover:text-text"

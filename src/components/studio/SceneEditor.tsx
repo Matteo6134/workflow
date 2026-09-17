@@ -79,17 +79,17 @@ export function SceneEditor({
       <div className="pointer-events-none absolute inset-0 flex flex-col gap-3 p-3">
         <header className="glass pointer-events-auto flex h-11 items-center justify-between gap-3 rounded-xl px-3">
           <div className="flex items-center gap-2">
-            <span className="text-[12.5px] font-semibold text-text">
+            <span className="text-[16px] font-semibold text-text">
               Position parts
             </span>
-            <span className="text-[10.5px] text-faint">
+            <span className="text-[13.5px] text-faint">
               Drag the gizmo, or type exact millimetres on the right
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md bg-accent px-3 py-1.5 text-[11.5px] font-semibold text-accent-ink transition-all hover:brightness-110"
+            className="rounded-md bg-accent px-3 py-1.5 text-[15px] font-semibold text-accent-ink transition-all hover:brightness-110"
           >
             Done
           </button>
@@ -125,7 +125,7 @@ export function SceneEditor({
               </RailSection>
             ) : (
               <RailSection title="Selected">
-                <p className="text-[11px] leading-relaxed text-faint">
+                <p className="text-[14px] leading-relaxed text-faint">
                   Click a part in the viewport, or pick one from the list, to
                   move and rotate it.
                 </p>

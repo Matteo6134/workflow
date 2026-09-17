@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 
 import { Card } from "./Card";
+import { CardIcon } from "./CardIcon";
 import { LookPanel } from "@/components/studio/LookPanel";
 import { RenderPanel } from "@/components/studio/RenderPanel";
 import type { Point } from "@/lib/board/boardState";
@@ -25,6 +26,10 @@ type LookCardProps = {
   readonly onMove: (id: string, position: Point) => void;
   readonly onFocus: (id: string) => void;
   readonly menu?: ReactNode;
+  readonly onMeasure?: (
+    id: string,
+    size: { width: number; height: number },
+  ) => void;
 };
 
 /**
@@ -47,6 +52,7 @@ export function LookCard({
   onMove,
   onFocus,
   menu,
+  onMeasure,
 }: LookCardProps) {
   return (
     <Card
@@ -54,13 +60,17 @@ export function LookCard({
       position={position}
       zoom={zoom}
       title="Look and render"
-      badge="setup"
-      width={330}
+      icon={<CardIcon kind="look" />}
+      width={420}
       onMove={onMove}
       onFocus={onFocus}
       menu={menu}
+      onMeasure={onMeasure}
     >
-      <div className="max-h-[460px] space-y-4 overflow-y-auto pr-1">
+      {/* The fade tells you there is more below. Without it the card simply
+          stops mid-section and reads as broken. */}
+      <div className="relative">
+        <div className="max-h-[520px] space-y-4 overflow-y-auto pr-1">
         <LookPanel
           selection={selection}
           onChange={onSelectionChange}
@@ -77,7 +87,12 @@ export function LookCard({
             rendering={rendering}
             blockedReason={blockedReason}
           />
+          </div>
         </div>
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-8 rounded-b-xl bg-gradient-to-t from-[var(--panel-solid)] to-transparent"
+          aria-hidden
+        />
       </div>
     </Card>
   );

@@ -73,10 +73,10 @@ export function PassInspector({ passes, onClose }: PassInspectorProps) {
       >
         <header className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-[14px] font-semibold text-text">
+            <h2 className="text-[18px] font-semibold text-text">
               What the model is given
             </h2>
-            <p className="mt-0.5 text-[11px] leading-snug text-dim">
+            <p className="mt-0.5 text-[14px] leading-snug text-dim">
               These come from your actual geometry, not guessed from a picture.
               Together they hold the product to its real shape and size.
             </p>
@@ -84,7 +84,7 @@ export function PassInspector({ passes, onClose }: PassInspectorProps) {
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-md border border-line px-2.5 py-1 text-[11px] text-dim transition-colors hover:text-text"
+            className="shrink-0 rounded-md border border-line px-2.5 py-1 text-[14px] text-dim transition-colors hover:text-text"
           >
             Close
           </button>
@@ -101,10 +101,10 @@ export function PassInspector({ passes, onClose }: PassInspectorProps) {
                 />
               </div>
               <figcaption className="mt-1.5">
-                <span className="block text-[11px] font-medium text-text">
+                <span className="block text-[14px] font-medium text-text">
                   {pass.label}
                 </span>
-                <span className="mt-0.5 block text-[9.5px] leading-snug text-faint">
+                <span className="mt-0.5 block text-[12px] leading-snug text-faint">
                   {pass.role}
                 </span>
               </figcaption>

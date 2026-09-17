@@ -95,20 +95,20 @@ export function ResultPreview({
 
         <div className="flex w-[330px] shrink-0 flex-col border-l border-line">
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
-            <h2 className="text-[12px] font-semibold uppercase tracking-wide text-dim">
+            <h2 className="text-[15px] font-semibold tracking-[0.01em] text-dim">
               Publish
             </h2>
             <button
               type="button"
               onClick={onClose}
-              className="text-[11px] text-faint transition-colors hover:text-text"
+              className="text-[14px] text-faint transition-colors hover:text-text"
             >
               Close
             </button>
           </div>
 
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-            <div className="flex items-center justify-between font-mono text-[10px] text-faint">
+            <div className="flex items-center justify-between font-mono text-[13px] text-faint">
               <span>
                 {image.width} x {image.height}
               </span>
@@ -124,7 +124,7 @@ export function ResultPreview({
             </div>
 
             <label className="block">
-              <span className="mb-1.5 block text-[10.5px] font-medium uppercase tracking-wide text-dim">
+              <span className="mb-1.5 block text-[13.5px] font-medium tracking-[0.01em] text-dim">
                 Caption
               </span>
               <textarea
@@ -132,9 +132,9 @@ export function ResultPreview({
                 onChange={(event) => setCaption(event.target.value)}
                 rows={7}
                 placeholder={"New drop.\n\n#industrialdesign #productdesign"}
-                className="w-full resize-none rounded-md border border-line bg-raised px-2.5 py-2 text-[12px] leading-relaxed text-text outline-none placeholder:text-faint focus:border-accent"
+                className="w-full resize-none rounded-md border border-line bg-raised px-2.5 py-2 text-[15px] leading-relaxed text-text outline-none placeholder:text-faint focus:border-accent"
               />
-              <span className="mt-1 flex justify-between font-mono text-[10px]">
+              <span className="mt-1 flex justify-between font-mono text-[13px]">
                 <span className={tooManyTags ? "text-danger" : "text-faint"}>
                   {hashtags}/{HASHTAG_LIMIT} tags
                 </span>
@@ -145,19 +145,19 @@ export function ResultPreview({
             </label>
 
             {blocked ? (
-              <p className="rounded-md border border-line bg-raised px-2.5 py-2 text-[10.5px] leading-snug text-dim">
+              <p className="rounded-md border border-line bg-raised px-2.5 py-2 text-[13.5px] leading-snug text-dim">
                 {blocked}
               </p>
             ) : null}
 
             {state.status === "error" ? (
-              <p className="rounded-md border border-danger/40 bg-danger/10 px-2.5 py-2 text-[10.5px] leading-snug text-danger">
+              <p className="rounded-md border border-danger/40 bg-danger/10 px-2.5 py-2 text-[13.5px] leading-snug text-danger">
                 {state.message}
               </p>
             ) : null}
 
             {state.status === "done" ? (
-              <div className="rounded-md border border-ok/40 bg-ok/10 px-2.5 py-2 text-[10.5px] leading-snug text-ok">
+              <div className="rounded-md border border-ok/40 bg-ok/10 px-2.5 py-2 text-[13.5px] leading-snug text-ok">
                 Posted to Instagram.
                 {state.permalink ? (
                   <>
@@ -187,7 +187,7 @@ export function ResultPreview({
                 state.status === "publishing" ||
                 state.status === "done"
               }
-              className="w-full rounded-lg bg-accent px-3 py-2.5 text-[13px] font-semibold text-accent-ink transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:bg-raised disabled:text-faint"
+              className="w-full rounded-lg bg-accent px-3 py-2.5 text-[16px] font-semibold text-accent-ink transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:bg-raised disabled:text-faint"
             >
               {state.status === "publishing"
                 ? "Posting..."

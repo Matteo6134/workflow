@@ -37,7 +37,7 @@ export function RenderPanel({
   return (
     <div className="space-y-4">
       <div>
-        <span className="mb-1.5 block text-[10.5px] font-medium uppercase tracking-wide text-dim">
+        <span className="mb-1.5 block text-[13.5px] font-medium tracking-[0.01em] text-dim">
           Format
         </span>
         <div className="grid grid-cols-5 gap-1">
@@ -47,7 +47,7 @@ export function RenderPanel({
               type="button"
               title={size.hint}
               onClick={() => patch({ imageSize: size.id })}
-              className={`rounded-md px-1 py-1.5 text-[10.5px] font-medium transition-colors ${
+              className={`rounded-md px-1 py-1.5 text-[13.5px] font-medium transition-colors ${
                 size.id === settings.imageSize
                   ? "bg-accent text-accent-ink"
                   : "bg-raised text-dim hover:bg-raised-hi hover:text-text"
@@ -61,10 +61,10 @@ export function RenderPanel({
 
       <div>
         <div className="mb-1.5 flex items-baseline justify-between">
-          <span className="text-[10.5px] font-medium uppercase tracking-wide text-dim">
+          <span className="text-[13.5px] font-medium tracking-[0.01em] text-dim">
             Resolution
           </span>
-          <span className="font-mono text-[9.5px] text-faint">
+          <span className="font-mono text-[12px] text-faint">
             {dimensionsFor(settings.imageSize, settings.resolution).join(" x ")}
           </span>
         </div>
@@ -83,7 +83,7 @@ export function RenderPanel({
                     : "SDXL - sharpest, needs more VRAM"
               }
               onClick={() => patch({ resolution: value })}
-              className={`rounded-md px-1 py-1.5 text-[10.5px] font-medium transition-colors ${
+              className={`rounded-md px-1 py-1.5 text-[13.5px] font-medium transition-colors ${
                 value === settings.resolution
                   ? "bg-accent text-accent-ink"
                   : "bg-raised text-dim hover:bg-raised-hi hover:text-text"
@@ -118,7 +118,7 @@ export function RenderPanel({
       />
 
       {settings.shapeFidelity < 0.5 ? (
-        <p className="rounded-md border border-danger/40 bg-danger/10 px-2 py-1.5 text-[10px] leading-snug text-danger">
+        <p className="rounded-md border border-danger/40 bg-danger/10 px-2 py-1.5 text-[13px] leading-snug text-danger">
           Below about 50% the model starts reshaping the product. Raise it if the
           render must match what you manufacture.
         </p>
@@ -136,7 +136,7 @@ export function RenderPanel({
       />
 
       <details className="rounded-md border border-line bg-raised/50">
-        <summary className="cursor-pointer px-2.5 py-2 text-[10.5px] text-dim transition-colors hover:text-text">
+        <summary className="cursor-pointer px-2.5 py-2 text-[13.5px] text-dim transition-colors hover:text-text">
           Advanced
         </summary>
         <div className="space-y-3 border-t border-line px-2.5 py-3">
@@ -159,14 +159,14 @@ export function RenderPanel({
             onChange={(guidance) => patch({ guidance })}
           />
           <label className="block">
-            <span className="text-[13px] font-medium text-text">Negative prompt</span>
+            <span className="text-[16px] font-medium text-text">Negative prompt</span>
             <textarea
               value={settings.negativePrompt}
               onChange={(event) => patch({ negativePrompt: event.target.value })}
               rows={2}
-              className="mt-1.5 w-full resize-none rounded-md border border-line bg-raised px-2 py-1.5 font-mono text-[10px] leading-snug text-text outline-none focus:border-accent"
+              className="mt-1.5 w-full resize-none rounded-md border border-line bg-raised px-2 py-1.5 font-mono text-[13px] leading-snug text-text outline-none focus:border-accent"
             />
-            <span className="mt-1 block text-[10px] leading-snug text-faint">
+            <span className="mt-1 block text-[13px] leading-snug text-faint">
               Geometry protection is always appended on the server and cannot be
               removed here.
             </span>
@@ -182,7 +182,7 @@ export function RenderPanel({
           onClick={onRender}
           disabled={!canRender || rendering}
           title={blockedReason ?? undefined}
-          className="w-full rounded-lg bg-accent px-3 py-2.5 text-[13px] font-semibold text-accent-ink transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:bg-raised disabled:text-faint"
+          className="w-full rounded-lg bg-accent px-3 py-2.5 text-[16px] font-semibold text-accent-ink transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:bg-raised disabled:text-faint"
         >
           {rendering ? "Rendering..." : "Render"}
         </button>
@@ -191,13 +191,13 @@ export function RenderPanel({
           type="button"
           onClick={onInspect}
           disabled={rendering}
-          className="w-full rounded-lg border border-line px-3 py-1.5 text-[11px] text-dim transition-colors hover:border-line-strong hover:text-text disabled:opacity-40"
+          className="w-full rounded-lg border border-line px-3 py-1.5 text-[14px] text-dim transition-colors hover:border-line-strong hover:text-text disabled:opacity-40"
         >
           See what the AI gets
         </button>
 
         {blockedReason && !rendering ? (
-          <p className="text-[10.5px] leading-snug text-faint">{blockedReason}</p>
+          <p className="text-[13.5px] leading-snug text-faint">{blockedReason}</p>
         ) : null}
       </div>
     </div>

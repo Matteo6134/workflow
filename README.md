@@ -179,8 +179,8 @@ Every card has a **+** menu:
   *render* camera, computed offscreen, so you can change the angle without
   opening the 3D view at all.
 - **Render** — render now, or inspect the control maps first.
-- **This object** — position in 3D, X-ray, hide from render, duplicate, or jump
-  to the Look card.
+- **This object** — position in 3D, hide from render, duplicate, or jump to
+  the Look card.
 
 The 3D view is where placement happens: orbit, a move/rotate/scale gizmo,
 front/back/left/right/top/iso framing, and exact numeric transforms. `G`, `R`
@@ -193,14 +193,6 @@ always zooms. Zoom is exponential in the scroll distance, so trackpads behave.
 
 Capture builds its own offscreen renderer from the camera you framed, so
 rendering works from the board without the 3D view being open.
-
-### X-ray
-
-The **X-ray** toggle makes a shell translucent so the electronics inside show.
-This is handled per pass, not just in the viewport: a ghosted shell is excluded
-from the depth and normal passes (so the internals define the volume) but still
-contributes its outline to the edge pass, and it stops occluding internal edges.
-Without that, "transparent" renders come back as a solid object with a tint.
 
 ---
 

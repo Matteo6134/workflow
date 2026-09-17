@@ -127,7 +127,6 @@ export function useStudio() {
           kind: "product",
           object: model.object,
           visible: true,
-          ghosted: false,
           unit,
           ...IDENTITY,
           dimensionsMm: {
@@ -183,7 +182,6 @@ export function useStudio() {
           kind: "component",
           object,
           visible: true,
-          ghosted: false,
           // Catalogue parts are authored in millimetres by definition.
           unit: "mm",
           ...IDENTITY,
@@ -255,14 +253,6 @@ export function useStudio() {
       const item = findItem(current, id);
       if (!item) return current;
       return updateItem(current, id, { visible: !item.visible });
-    });
-  }, []);
-
-  const toggleGhost = useCallback((id: string) => {
-    setScene((current) => {
-      const item = findItem(current, id);
-      if (!item) return current;
-      return updateItem(current, id, { ghosted: !item.ghosted });
     });
   }, []);
 
@@ -419,7 +409,6 @@ export function useStudio() {
     remove,
     select,
     toggleVisible,
-    toggleGhost,
     setPerspective,
     setItemUnit,
     duplicate,

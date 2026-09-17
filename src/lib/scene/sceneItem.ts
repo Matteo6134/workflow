@@ -23,8 +23,6 @@ export type SceneItem = {
   readonly kind: SceneItemKind;
   readonly object: THREE.Object3D;
   readonly visible: boolean;
-  /** X-ray shading, so the parts inside an enclosure are visible. */
-  readonly ghosted: boolean;
   /** Rotation is stored in degrees - what the user types in the panel. */
   readonly position: Vec3;
   readonly rotation: Vec3;

@@ -8,51 +8,23 @@ export type DeleteAction = {
   readonly onSelect: () => void;
 };
 
-export type IconAction = {
-  readonly id: string;
-  readonly hint: string;
-  readonly active?: boolean;
-  readonly onSelect: () => void;
-};
-
 type DeletePillProps = {
   /** Destructive choices, revealed as words when the pill is hovered. */
   readonly actions: readonly DeleteAction[];
-  /** A non-destructive toggle that stays visible as an icon. */
-  readonly hide?: IconAction;
 };
 
 /**
  * The delete control on a card's title row.
  *
- * Collapsed it is an eye (hide) and a red cross. Hovering the cross fills the
- * pill red and swaps the cross for the words that actually delete, so a
- * destructive action always takes a second, deliberate move.
- *
- * The eye sits OUTSIDE the hover group on purpose: reaching for hide should not
- * make the delete options bloom under the cursor.
+ * Collapsed it is a red cross. Hovering fills the pill red and swaps the cross
+ * for the words that actually delete, so a destructive action always takes a
+ * second, deliberate move.
  */
-export function DeletePill({ actions, hide }: DeletePillProps) {
-  if (actions.length === 0 && !hide) return null;
+export function DeletePill({ actions }: DeletePillProps) {
+  if (actions.length === 0) return null;
 
   return (
     <div className="flex shrink-0 items-center gap-1" data-delete-pill>
-      {hide ? (
-        <button
-          type="button"
-          title={hide.hint}
-          aria-label={hide.hint}
-          aria-pressed={hide.active === false}
-          onClick={hide.onSelect}
-          className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors ${
-            hide.active === false
-              ? "text-faint hover:text-text"
-              : "text-dim hover:text-text"
-          }`}
-        >
-          <EyeIcon open={hide.active !== false} />
-        </button>
-      ) : null}
 
       {actions.length > 0 ? (
         <div className="group/del">
@@ -97,34 +69,3 @@ export function DeletePill({ actions, hide }: DeletePillProps) {
   );
 }
 
-function EyeIcon({ open }: { readonly open: boolean }) {
-  return (
-    <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden>
-      {open ? (
-        <>
-          <path
-            d="M1.5 8S3.8 3.5 8 3.5 14.5 8 14.5 8 12.2 12.5 8 12.5 1.5 8 1.5 8Z"
-            stroke="currentColor"
-            strokeWidth="1.3"
-          />
-          <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.3" />
-        </>
-      ) : (
-        <>
-          <path
-            d="M2 8s2.3-4.5 6-4.5c1 0 1.9.3 2.7.7M14 8s-2.3 4.5-6 4.5c-1 0-1.9-.3-2.6-.7"
-            stroke="currentColor"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-          />
-          <path
-            d="m2.5 2.5 11 11"
-            stroke="currentColor"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-          />
-        </>
-      )}
-    </svg>
-  );
-}

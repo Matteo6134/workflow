@@ -7,7 +7,6 @@ type SceneGraphProps = {
   readonly selectedId: string | null;
   readonly onSelect: (id: string | null) => void;
   readonly onToggleVisible: (id: string) => void;
-  readonly onToggleGhost: (id: string) => void;
   readonly onRemove: (id: string) => void;
 };
 
@@ -16,7 +15,6 @@ export function SceneGraph({
   selectedId,
   onSelect,
   onToggleVisible,
-  onToggleGhost,
   onRemove,
 }: SceneGraphProps) {
   if (items.length === 0) {
@@ -74,22 +72,6 @@ export function SceneGraph({
                 </span>
               </button>
 
-              <button
-                type="button"
-                onClick={() => onToggleGhost(item.id)}
-                title={
-                  item.ghosted
-                    ? "Make solid again"
-                    : "See through it - shows the parts inside"
-                }
-                aria-label="Toggle x-ray"
-                aria-pressed={item.ghosted}
-                className={`shrink-0 transition-colors ${
-                  item.ghosted ? "text-accent" : "text-faint hover:text-text"
-                }`}
-              >
-                <GhostIcon />
-              </button>
 
               <button
                 type="button"
@@ -135,24 +117,6 @@ function EyeIcon({ open }: { readonly open: boolean }) {
           <path d="m2.5 2.5 11 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
         </>
       )}
-    </svg>
-  );
-}
-
-function GhostIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <rect
-        x="2.5"
-        y="2.5"
-        width="16"
-        height="11"
-        rx="2"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeDasharray="2.2 1.6"
-      />
-      <circle cx="8" cy="8" r="2.2" fill="currentColor" />
     </svg>
   );
 }

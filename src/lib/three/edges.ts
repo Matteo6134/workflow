@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { GHOST_FLAG } from "./ghost";
 
 /**
  * Builds a true hidden-line drawing of the model.
@@ -73,9 +72,6 @@ export function occludeSurfaces(subject: THREE.Object3D): () => void {
 
   subject.traverse((child) => {
     if (!(child instanceof THREE.Mesh)) return;
-    // A ghosted shell must not occlude: the whole point of an X-ray view is
-    // that the edges of the components inside read through it.
-    if (child.userData[GHOST_FLAG]) return;
     originals.set(child, child.material);
     child.material = blackout;
   });

@@ -12,7 +12,6 @@ import {
 } from "./passes";
 import { buildEdgeOverlay, createMaskMaterial, occludeSurfaces } from "./edges";
 import { shouldHideDuringCapture } from "./captureScope";
-import { hideGhostedForVolumePasses } from "./ghost";
 
 /**
  * Objects flagged this way (grids, gizmos, helpers) are hidden during capture
@@ -68,11 +67,6 @@ export function captureAllPasses(options: CaptureOptions): CapturePasses {
     // Control passes: black reads as "infinitely far" / "no surface".
     scene.background = new THREE.Color(0x000000);
 
-    // A ghosted shell is excluded from the volume passes so the electronics
-    // inside define the form. Leaving it in would describe a sealed box and the
-    // render would come back opaque no matter what the prompt asked for.
-    const restoreGhosted = hideGhostedForVolumePasses(subject);
-
     scene.overrideMaterial = depthMaterial;
     const depth = renderToDataUrl(gl, scene, camera);
 
@@ -81,8 +75,6 @@ export function captureAllPasses(options: CaptureOptions): CapturePasses {
 
     scene.overrideMaterial = maskMaterial;
     const mask = renderToDataUrl(gl, scene, camera);
-
-    restoreGhosted();
 
     const edge = renderEdgePass(options, edges.group);
 

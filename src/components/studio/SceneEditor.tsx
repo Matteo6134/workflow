@@ -19,7 +19,6 @@ type SceneEditorProps = {
   readonly onCameraChange: (camera: CameraState) => void;
   readonly onModeChange: (mode: TransformMode) => void;
   readonly onToggleVisible: (id: string) => void;
-  readonly onToggleGhost: (id: string) => void;
   readonly onRemove: (id: string) => void;
   readonly onFrame: (direction: ViewDirection) => void;
   readonly onClose: () => void;
@@ -42,7 +41,6 @@ export function SceneEditor({
   onCameraChange,
   onModeChange,
   onToggleVisible,
-  onToggleGhost,
   onRemove,
   onFrame,
   onClose,
@@ -103,7 +101,6 @@ export function SceneEditor({
                 selectedId={scene.selectedId}
                 onSelect={onSelect}
                 onToggleVisible={onToggleVisible}
-                onToggleGhost={onToggleGhost}
                 onRemove={onRemove}
               />
             </RailSection>

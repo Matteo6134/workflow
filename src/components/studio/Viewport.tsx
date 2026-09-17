@@ -6,7 +6,6 @@ import { OrbitControls, TransformControls, Grid } from "@react-three/drei";
 import * as THREE from "three";
 import { HELPER_FLAG } from "@/lib/three/capture";
 import type { CameraState } from "@/lib/three/captureOffscreen";
-import { applyGhost, clearGhost } from "@/lib/three/ghost";
 import { applyFraming, frameObject } from "@/lib/three/framing";
 import type { ViewDirection } from "@/lib/three/framing";
 import type { SceneItem, Vec3 } from "@/lib/scene/sceneItem";
@@ -115,14 +114,6 @@ function SceneContents({
     if (!selected) return;
     onTransform(selected.id, readTransform(selected.object));
   }, [selected, onTransform]);
-
-  // Keep the live materials in step with each item's x-ray flag.
-  useEffect(() => {
-    for (const item of items) {
-      if (item.ghosted) applyGhost(item.object);
-      else clearGhost(item.object);
-    }
-  }, [items]);
 
   return (
     <>

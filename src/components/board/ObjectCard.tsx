@@ -21,7 +21,6 @@ type ObjectCardProps = {
   readonly onSelect: (itemId: string) => void;
   readonly onExpand: (itemId: string) => void;
   readonly onToggleVisible: (itemId: string) => void;
-  readonly onToggleGhost: (itemId: string) => void;
   readonly onUnitChange: (itemId: string, unit: ModelUnit) => void;
   /** The "+" action menu rendered in this card's header. */
   readonly menu?: ReactNode;
@@ -49,7 +48,6 @@ export function ObjectCard({
   onSelect,
   onExpand,
   onToggleVisible,
-  onToggleGhost,
   onUnitChange,
   menu,
   onMeasure,
@@ -134,12 +132,6 @@ export function ObjectCard({
           active={item.visible}
           label={item.visible ? "Visible" : "Hidden"}
           onClick={() => onToggleVisible(item.id)}
-        />
-        <SmallButton
-          active={item.ghosted}
-          label="X-ray"
-          title="See through it, to show the parts inside"
-          onClick={() => onToggleGhost(item.id)}
         />
         <button
           type="button"

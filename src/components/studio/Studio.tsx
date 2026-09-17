@@ -443,7 +443,6 @@ export function Studio() {
             onSelect={studio.select}
             onExpand={openEditor}
             onToggleVisible={studio.toggleVisible}
-            onToggleGhost={studio.toggleGhost}
             onUnitChange={studio.setItemUnit}
             onMeasure={measureCard}
             menu={
@@ -460,12 +459,6 @@ export function Studio() {
                         label: "Position in 3D",
                         hint: "Move and rotate with a gizmo",
                         onSelect: () => openEditor(item.id),
-                      },
-                      {
-                        id: "xray",
-                        label: item.ghosted ? "Turn off X-ray" : "X-ray",
-                        hint: "See the parts inside the shell",
-                        onSelect: () => studio.toggleGhost(item.id),
                       },
                       {
                         id: "visible",
@@ -487,14 +480,6 @@ export function Studio() {
             }
             deleteMenu={
               <DeletePill
-                hide={{
-                  id: "hide-object",
-                  hint: item.visible
-                    ? "Hide from the render"
-                    : "Show in the render",
-                  active: item.visible,
-                  onSelect: () => studio.toggleVisible(item.id),
-                }}
                 actions={[
                   {
                     id: "remove-object",
@@ -783,7 +768,6 @@ export function Studio() {
           onCameraChange={studio.setCameraState}
           onModeChange={studio.setTransformMode}
           onToggleVisible={studio.toggleVisible}
-          onToggleGhost={studio.toggleGhost}
           onRemove={studio.remove}
           onFrame={studio.frameView}
           onClose={() => setEditorOpen(false)}

@@ -8,6 +8,7 @@ import { Card } from "./Card";
 import { CardIcon } from "./CardIcon";
 import type { Point } from "@/lib/board/boardState";
 import type { SceneItem } from "@/lib/scene/sceneItem";
+import type { ModelUnit } from "@/lib/three/loadModel";
 
 type ObjectCardProps = {
   readonly cardId: string;
@@ -21,9 +22,10 @@ type ObjectCardProps = {
   readonly onExpand: (itemId: string) => void;
   readonly onToggleVisible: (itemId: string) => void;
   readonly onToggleGhost: (itemId: string) => void;
-  readonly onRemove: (itemId: string) => void;
+  readonly onUnitChange: (itemId: string, unit: ModelUnit) => void;
   /** The "+" action menu rendered in this card's header. */
   readonly menu?: ReactNode;
+  readonly deleteMenu?: ReactNode;
   readonly onMeasure?: (
     id: string,
     size: { width: number; height: number },
@@ -48,9 +50,10 @@ export function ObjectCard({
   onExpand,
   onToggleVisible,
   onToggleGhost,
-  onRemove,
+  onUnitChange,
   menu,
   onMeasure,
+  deleteMenu,
 }: ObjectCardProps) {
   const dims = item.dimensionsMm;
 
@@ -68,8 +71,8 @@ export function ObjectCard({
         onSelect(item.id);
       }}
       onDoubleClick={() => onExpand(item.id)}
-      onRemove={() => onRemove(item.id)}
       menu={menu}
+      deleteMenu={deleteMenu}
       onMeasure={onMeasure}
     >
       <button
@@ -96,9 +99,34 @@ export function ObjectCard({
       </button>
 
       {dims ? (
-        <p className="mt-2 font-mono text-[12px] text-faint">
-          {fmt(dims.x)} x {fmt(dims.y)} x {fmt(dims.z)} mm
-        </p>
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <p className="font-mono text-[13px] text-dim">
+            {fmt(dims.x)} x {fmt(dims.y)} x {fmt(dims.z)} mm
+          </p>
+
+          {/* STL stores no units, so this is a judgement only you can make -
+              and only once the measured size is on screen. Changing it
+              rescales the model in place. */}
+          {item.kind === "product" ? (
+            <div className="flex shrink-0 gap-0.5 rounded-md bg-raised p-0.5">
+              {UNITS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  title={`Treat the file as ${option}`}
+                  onClick={() => onUnitChange(item.id, option)}
+                  className={`rounded px-1.5 py-0.5 text-[12px] font-medium transition-colors ${
+                    option === item.unit
+                      ? "bg-accent text-accent-ink"
+                      : "text-faint hover:text-text"
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
       ) : null}
 
       <div className="mt-2 flex items-center gap-1">
@@ -152,6 +180,8 @@ function SmallButton({
     </button>
   );
 }
+
+const UNITS: readonly ModelUnit[] = ["mm", "cm", "m", "in"];
 
 function fmt(value: number): string {
   return value >= 100 ? value.toFixed(0) : value.toFixed(1);

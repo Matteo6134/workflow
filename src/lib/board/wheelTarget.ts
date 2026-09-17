@@ -5,10 +5,11 @@
  * wheel tick over a panel — picking a material, scrolling the electronics list
  * — zoomed the board instead of scrolling the panel under the cursor.
  *
- * The rule is "does something under the cursor actually want this scroll?",
- * NOT "is the cursor over a card". Suppressing zoom across whole cards creates
- * dead zones: an object card has nothing to scroll, so a wheel tick there
- * should still zoom the board.
+ * Zoom is reserved for the bare board. Anything under the cursor that belongs
+ * to the UI - a card, a panel, a scroller - keeps the wheel, so resting on a
+ * card and scrolling never yanks the whole board's scale.
+ *
+ * Ctrl/pinch still zooms anywhere, which is the platform gesture for it.
  */
 
 /**
@@ -17,10 +18,19 @@
  */
 export const PANEL_ATTR = "data-board-panel";
 
+/**
+ * A card on the board. Cards capture the wheel outright, whether or not they
+ * have anything to scroll: zooming the whole board while the cursor rests on a
+ * card is disorienting, and a card is where the user's attention already is.
+ */
+export const CARD_ATTR = "data-board-card";
+
 export type WheelIntent = "zoom" | "scroll";
 
 /** One ancestor between the event target and the board. */
 export type WheelPathNode = {
+  /** Marked with CARD_ATTR: a board card, which keeps the wheel. */
+  readonly isCard: boolean;
   /** Marked with PANEL_ATTR: always swallows the wheel. */
   readonly isPanel: boolean;
   /**
@@ -56,7 +66,7 @@ export function wheelIntent(context: WheelContext): WheelIntent {
   if (context.deltaY === 0) return "scroll";
 
   for (const node of context.path) {
-    if (node.isPanel || node.capturesWheel) return "scroll";
+    if (node.isCard || node.isPanel || node.capturesWheel) return "scroll";
   }
   return "zoom";
 }
@@ -129,6 +139,7 @@ export function collectWheelPath(
 
   while (current && current !== boundary) {
     path.push({
+      isCard: current.hasAttribute(CARD_ATTR),
       isPanel: current.hasAttribute(PANEL_ATTR),
       capturesWheel: isScrollContainer(current),
     });

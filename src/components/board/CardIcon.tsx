@@ -1,6 +1,12 @@
 "use client";
 
-export type CardIconKind = "product" | "part" | "look" | "renders";
+export type CardIconKind =
+  | "product"
+  | "part"
+  | "describe"
+  | "look"
+  | "render"
+  | "renders";
 
 /**
  * Identifies a card at a glance.
@@ -56,6 +62,36 @@ export function CardIcon({ kind }: { readonly kind: CardIconKind }) {
           strokeWidth="1.6"
           strokeLinecap="round"
         />
+      </svg>
+    );
+  }
+
+  if (kind === "describe") {
+    // A caret and a rule: writing, not chatting.
+    return (
+      <svg {...common}>
+        <path
+          d="M5 6h14M5 11h9M5 16h6"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+
+  if (kind === "render") {
+    // Sliders: the mechanical settings, distinct from the aperture of Style.
+    return (
+      <svg {...common}>
+        <path
+          d="M4 8h10M18 8h2M4 16h4M12 16h8"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        />
+        <circle cx="16" cy="8" r="2.3" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="10" cy="16" r="2.3" stroke="currentColor" strokeWidth="1.7" />
       </svg>
     );
   }

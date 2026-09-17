@@ -77,7 +77,7 @@ export function SceneEditor({
       </div>
 
       <div className="pointer-events-none absolute inset-0 flex flex-col gap-3 p-3">
-        <header className="glass pointer-events-auto flex h-11 items-center justify-between gap-3 rounded-xl px-3">
+        <header className="glass backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto flex h-11 items-center justify-between gap-3 rounded-xl px-3">
           <div className="flex items-center gap-2">
             <span className="text-[16px] font-semibold text-text">
               Position parts
@@ -96,7 +96,7 @@ export function SceneEditor({
         </header>
 
         <div className="flex min-h-0 flex-1 gap-3">
-          <aside className="glass pointer-events-auto flex w-[250px] shrink-0 flex-col overflow-y-auto rounded-xl">
+          <aside className="glass backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto flex w-[250px] shrink-0 flex-col overflow-y-auto rounded-xl">
             <RailSection title="On the stage">
               <SceneGraph
                 items={scene.items}
@@ -113,7 +113,7 @@ export function SceneEditor({
             <ViewBar onFrame={onFrame} disabled={scene.items.length === 0} />
           </div>
 
-          <aside className="glass pointer-events-auto w-[270px] shrink-0 overflow-y-auto rounded-xl">
+          <aside className="glass backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto w-[270px] shrink-0 overflow-y-auto rounded-xl">
             {selected ? (
               <RailSection title="Selected" hint={selected.name}>
                 <TransformPanel

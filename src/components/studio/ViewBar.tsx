@@ -23,7 +23,7 @@ const ORDER: readonly ViewDirection[] = [
  */
 export function ViewBar({ onFrame, disabled }: ViewBarProps) {
   return (
-    <div className="glass pointer-events-auto flex items-center gap-0.5 rounded-xl p-1">
+    <div className="glass backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto flex items-center gap-0.5 rounded-xl p-1">
       {ORDER.map((direction) => (
         <button
           key={direction}

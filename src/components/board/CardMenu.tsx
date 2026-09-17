@@ -22,6 +22,10 @@ export type CardActionGroup = {
 type CardMenuProps = {
   readonly groups: readonly CardActionGroup[];
   readonly title?: string;
+  /** Accent for additive actions, danger for destructive ones. */
+  readonly tone?: "accent" | "danger";
+  /** Which edge it hangs off, so the popover opens away from the card. */
+  readonly side?: "right" | "left";
 };
 
 /**
@@ -31,7 +35,13 @@ type CardMenuProps = {
  * "change what is rendered" and "change how it is rendered", and a single
  * column of a dozen verbs hides that distinction.
  */
-export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
+export function CardMenu({
+  groups,
+  title = "Actions",
+  tone = "accent",
+  side = "right",
+}: CardMenuProps) {
+  const danger = tone === "danger";
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -60,13 +70,18 @@ export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
         title={title}
         aria-label={title}
         aria-expanded={open}
+        data-tour="card-plus"
         // The header is a drag handle; keep a menu click from starting a drag.
         onPointerDown={(event) => event.stopPropagation()}
         onClick={() => setOpen((value) => !value)}
-        className={`flex h-7 w-7 items-center justify-center rounded-md transition-colors ${
-          open
-            ? "bg-accent text-accent-ink"
-            : "bg-raised-hi text-dim hover:bg-accent hover:text-accent-ink"
+        className={`flex h-8 w-8 items-center justify-center rounded-full border shadow-lg transition-colors ${
+          danger
+            ? open
+              ? "border-danger bg-danger text-white"
+              : "border-danger/60 bg-panel-solid text-danger hover:bg-danger hover:text-white"
+            : open
+              ? "border-line bg-accent text-accent-ink"
+              : "border-line bg-panel-solid text-text hover:bg-accent hover:text-accent-ink"
         }`}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
@@ -84,7 +99,11 @@ export function CardMenu({ groups, title = "Actions" }: CardMenuProps) {
           {...{ [PANEL_ATTR]: "true" }}
           // Capped so a long action list scrolls inside the popover rather
           // than overflowing the card.
-          className="glass absolute right-0 top-9 z-30 max-h-[320px] w-[250px] overflow-y-auto rounded-lg p-1.5"
+          // Opens outward from the card edge rather than back over the card, so the
+          // content the action applies to stays visible while you choose.
+          className={`glass backdrop-blur-2xl backdrop-saturate-150 absolute top-1/2 z-30 max-h-[320px] w-[250px] -translate-y-1/2 overflow-y-auto rounded-lg p-1.5 ${
+            side === "left" ? "right-full mr-2" : "left-full ml-2"
+          }`}
           onPointerDown={(event) => event.stopPropagation()}
         >
           {groups.map((group, groupIndex) => (

@@ -180,6 +180,7 @@ export function RenderPanel({
         <button
           type="button"
           onClick={onRender}
+          data-tour="render"
           disabled={!canRender || rendering}
           title={blockedReason ?? undefined}
           className="w-full rounded-lg bg-accent px-3 py-2.5 text-[16px] font-semibold text-accent-ink transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:bg-raised disabled:text-faint"

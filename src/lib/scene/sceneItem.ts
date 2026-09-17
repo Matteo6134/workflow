@@ -29,6 +29,8 @@ export type SceneItem = {
   readonly position: Vec3;
   readonly rotation: Vec3;
   readonly scale: Vec3;
+  /** Unit the source file was interpreted as. Only meaningful for products. */
+  readonly unit: "mm" | "cm" | "m" | "in";
   /** Source dimensions in millimetres, for display only. */
   readonly dimensionsMm: Vec3 | null;
   /** Rendered preview for the board card; null if the render failed. */

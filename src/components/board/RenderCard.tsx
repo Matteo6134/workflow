@@ -19,6 +19,7 @@ type RenderCardProps = {
   readonly onMove: (id: string, position: Point) => void;
   readonly onFocus: (id: string) => void;
   readonly menu?: ReactNode;
+  readonly deleteMenu?: ReactNode;
   readonly onMeasure?: (
     id: string,
     size: { width: number; height: number },
@@ -42,6 +43,7 @@ export function RenderCard({
   onFocus,
   menu,
   onMeasure,
+  deleteMenu,
 }: RenderCardProps) {
   return (
     <Card
@@ -55,6 +57,7 @@ export function RenderCard({
       onMove={onMove}
       onFocus={onFocus}
       menu={menu}
+      deleteMenu={deleteMenu}
       onMeasure={onMeasure}
     >
       {results.length === 0 && !rendering ? (

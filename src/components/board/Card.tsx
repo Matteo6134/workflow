@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { CARD_WIDTH, type Point } from "@/lib/board/boardState";
+import { CARD_ATTR } from "@/lib/board/wheelTarget";
 
 type CardProps = {
   readonly id: string;
@@ -16,9 +17,10 @@ type CardProps = {
   readonly onMove: (id: string, position: Point) => void;
   readonly onFocus: (id: string) => void;
   readonly onDoubleClick?: () => void;
-  readonly onRemove?: () => void;
   /** The "+" action menu for this card. */
   readonly menu?: ReactNode;
+  /** The destructive menu, shown as a round red cross on the left edge. */
+  readonly deleteMenu?: ReactNode;
   /** Reports the rendered size, so connector wires can anchor to real edges. */
   readonly onMeasure?: (id: string, size: { width: number; height: number }) => void;
   readonly children: ReactNode;
@@ -43,8 +45,8 @@ export function Card({
   onMove,
   onFocus,
   onDoubleClick,
-  onRemove,
   menu,
+  deleteMenu,
   onMeasure,
   children,
 }: CardProps) {
@@ -102,7 +104,15 @@ export function Card({
   return (
     <div
       ref={rootRef}
-      className={`glass absolute rounded-xl transition-shadow ${
+      // Cards keep the wheel; only the bare board zooms.
+      {...{ [CARD_ATTR]: "true" }}
+      /*
+       * Hovering lifts the card above its siblings. Without this the "+"
+       * popover, which opens outward past the card edge, renders underneath
+       * the next card along - each panel is its own stacking context, so a
+       * z-index inside one cannot beat a sibling.
+       */
+      className={`glass backdrop-blur-2xl backdrop-saturate-150 group absolute z-10 rounded-xl transition-shadow hover:z-40 focus-within:z-40 ${
         selected ? "accent-glow" : ""
       }`}
       style={{ left: position.x, top: position.y, width }}
@@ -129,36 +139,39 @@ export function Card({
           {title}
         </span>
 
+        {/* On the title row, revealed with the card. Expanding it is a second,
+            deliberate hover, so deletion is never one stray click. */}
+        {deleteMenu ? (
+          <div
+            className="opacity-0 transition-opacity duration-150 focus-within:opacity-100 group-hover:opacity-100"
+            onPointerDown={(event) => event.stopPropagation()}
+          >
+            {deleteMenu}
+          </div>
+        ) : null}
+
         {badge ? (
           <span className="shrink-0 rounded-full bg-raised-hi px-1.5 py-0.5 font-mono text-[12px] text-dim">
             {badge}
           </span>
         ) : null}
 
-        {menu}
-
-        {onRemove ? (
-          <button
-            type="button"
-            onClick={onRemove}
-            onPointerDown={(event) => event.stopPropagation()}
-            title="Remove"
-            aria-label="Remove"
-            className="shrink-0 text-faint transition-colors hover:text-danger"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-              <path
-                d="m4 4 8 8M12 4l-8 8"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        ) : null}
       </header>
 
       <div className="p-3">{children}</div>
+
+      {/*
+        Sits on the right edge, clear of the wire that leaves at mid-height, and
+        appears on hover so a board full of cards is not a wall of buttons.
+        focus-within keeps it reachable by keyboard, where hover does not exist.
+      */}
+      {menu ? (
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 opacity-0 transition-opacity duration-150 focus-within:opacity-100 group-hover:opacity-100">
+          {menu}
+        </div>
+      ) : null}
+
+
     </div>
   );
 }

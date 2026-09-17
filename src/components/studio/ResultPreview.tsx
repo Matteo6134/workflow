@@ -79,7 +79,7 @@ export function ResultPreview({
       role="presentation"
     >
       <div
-        className="glass flex max-h-full w-full max-w-4xl overflow-hidden rounded-2xl"
+        className="glass backdrop-blur-2xl backdrop-saturate-150 flex max-h-full w-full max-w-4xl overflow-hidden rounded-2xl"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"

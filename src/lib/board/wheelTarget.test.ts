@@ -6,9 +6,10 @@ import {
   type WheelPathNode,
 } from "./wheelTarget";
 
-const plain: WheelPathNode = { isPanel: false, capturesWheel: false };
-const scroller: WheelPathNode = { isPanel: false, capturesWheel: true };
-const panel: WheelPathNode = { isPanel: true, capturesWheel: false };
+const plain: WheelPathNode = { isCard: false, isPanel: false, capturesWheel: false };
+const card: WheelPathNode = { isCard: true, isPanel: false, capturesWheel: false };
+const scroller: WheelPathNode = { isCard: false, isPanel: false, capturesWheel: true };
+const panel: WheelPathNode = { isCard: false, isPanel: true, capturesWheel: false };
 
 const ctx = (over: Partial<Parameters<typeof wheelIntent>[0]> = {}) => ({
   ctrlKey: false,
@@ -41,14 +42,20 @@ describe("wheelIntent", () => {
   });
 
   /**
-   * The regression this replaced: marking whole cards made object cards a dead
-   * zone. A card with nothing scrollable under the cursor must still zoom.
+   * A card keeps the wheel whether or not it can scroll. Zooming the whole
+   * board while the cursor rests on a card is disorienting, so "over a card"
+   * is treated as intent to interact with that card, not the canvas.
    */
-  it("zooms over a card that has nothing to scroll", () => {
-    expect(wheelIntent(ctx({ path: [plain, plain, plain] }))).toBe("zoom");
+  it("does not zoom over a card, even with nothing to scroll", () => {
+    expect(wheelIntent(ctx({ path: [card] }))).toBe("scroll");
   });
 
-  it("zooms on ctrl+wheel even over a scroller, since that is a pinch", () => {
+  it("zooms over bare board furniture that is neither card nor panel", () => {
+    expect(wheelIntent(ctx({ path: [plain, plain] }))).toBe("zoom");
+  });
+
+  it("zooms on ctrl+wheel even over a card, since that is a pinch", () => {
+    expect(wheelIntent(ctx({ ctrlKey: true, path: [card] }))).toBe("zoom");
     expect(wheelIntent(ctx({ ctrlKey: true, path: [scroller] }))).toBe("zoom");
   });
 

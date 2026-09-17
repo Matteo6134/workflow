@@ -65,7 +65,7 @@ export function PassInspector({ passes, onClose }: PassInspectorProps) {
       role="presentation"
     >
       <div
-        className="glass w-full max-w-5xl rounded-2xl p-5"
+        className="glass backdrop-blur-2xl backdrop-saturate-150 w-full max-w-5xl rounded-2xl p-5"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"

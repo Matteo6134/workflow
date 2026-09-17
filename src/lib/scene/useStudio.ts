@@ -13,7 +13,12 @@ import {
   type SceneItem,
   type SceneState,
 } from "./sceneItem";
-import { loadModel, disposeModel, type ModelUnit } from "@/lib/three/loadModel";
+import {
+  loadModel,
+  disposeModel,
+  UNIT_TO_MM,
+  type ModelUnit,
+} from "@/lib/three/loadModel";
 import { captureSizeFor } from "@/lib/three/capture";
 import {
   captureSceneOffscreen,
@@ -108,19 +113,22 @@ export function useStudio() {
     setFramingRequest({ direction, token: Date.now() });
   }, []);
 
+  /** Resolves to the new item's id, so the caller can place its card. */
   const importProduct = useCallback(
-    async (file: File, unit: ModelUnit = "mm") => {
+    async (file: File, unit: ModelUnit = "mm"): Promise<string | null> => {
       setLoadingModel(true);
       setError(null);
       try {
         const model = await loadModel(file, unit);
+        const id = createId("product");
         const item: SceneItem = {
-          id: createId("product"),
+          id,
           name: file.name,
           kind: "product",
           object: model.object,
           visible: true,
           ghosted: false,
+          unit,
           ...IDENTITY,
           dimensionsMm: {
             x: model.sourceDimensions.x,
@@ -132,8 +140,10 @@ export function useStudio() {
         };
         setScene((current) => addItem(current, item));
         frameView("iso");
+        return id;
       } catch (cause) {
         setError(cause instanceof Error ? cause.message : String(cause));
+        return null;
       } finally {
         setLoadingModel(false);
       }
@@ -150,7 +160,10 @@ export function useStudio() {
    * the part's own rather than a figure typed into the catalogue.
    */
   const addComponent = useCallback(
-    async (spec: ComponentSpec, params: Record<string, number>) => {
+    async (
+      spec: ComponentSpec,
+      params: Record<string, number>,
+    ): Promise<string | null> => {
       setError(null);
       setLoadingComponentId(spec.id);
 
@@ -163,25 +176,30 @@ export function useStudio() {
           ? measure(object)
           : new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3());
 
+        const id = createId(spec.id);
         const item: SceneItem = {
-          id: createId(spec.id),
+          id,
           name: spec.name,
           kind: "component",
           object,
           visible: true,
           ghosted: false,
+          // Catalogue parts are authored in millimetres by definition.
+          unit: "mm",
           ...IDENTITY,
           dimensionsMm: { x: size.x, y: size.y, z: size.z },
           thumbnail: renderThumbnail(object),
           triangleCount: 0,
         };
         setScene((current) => addItem(current, item));
+        return id;
       } catch (cause) {
         setError(
           `Could not add ${spec.name}: ${
             cause instanceof Error ? cause.message : String(cause)
           }`,
         );
+        return null;
       } finally {
         setLoadingComponentId(null);
       }
@@ -287,6 +305,36 @@ export function useStudio() {
     }
   }, [visibleObjects, cameraState, settings.imageSize, settings.resolution]);
 
+  /**
+   * Re-interprets an imported file's units and rescales in place.
+   *
+   * STL carries no unit information, so this is a judgement the user can only
+   * make once they see the measured size. Correcting it afterwards beats asking
+   * before the model is even on screen. Position scales with the object because
+   * centring was applied in the old unit.
+   */
+  const setItemUnit = useCallback((id: string, unit: ModelUnit) => {
+    setScene((current) => {
+      const item = findItem(current, id);
+      if (!item || item.unit === unit) return current;
+
+      const ratio = UNIT_TO_MM[unit] / UNIT_TO_MM[item.unit];
+      item.object.scale.multiplyScalar(ratio);
+      item.object.position.multiplyScalar(ratio);
+      item.object.updateMatrixWorld(true);
+
+      const size = new THREE.Box3()
+        .setFromObject(item.object)
+        .getSize(new THREE.Vector3());
+
+      return updateItem(current, id, {
+        unit,
+        dimensionsMm: { x: size.x, y: size.y, z: size.z },
+        thumbnail: renderThumbnail(item.object),
+      });
+    });
+  }, []);
+
   const clearResults = useCallback(() => setResults([]), []);
 
   const resetLook = useCallback(() => setSelection(EMPTY_SELECTION), []);
@@ -373,6 +421,7 @@ export function useStudio() {
     toggleVisible,
     toggleGhost,
     setPerspective,
+    setItemUnit,
     duplicate,
     clearResults,
     resetLook,

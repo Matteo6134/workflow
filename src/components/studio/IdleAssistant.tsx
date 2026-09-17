@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { WindowsHand } from "./GuideCursor";
 
 type IdleAssistantProps = {
   /** What to nudge the user toward; null hides the assistant entirely. */
@@ -30,9 +29,12 @@ type Placement = {
  * control you need next and points at it.
  *
  * Standing next to the target is the whole idea: a hint parked in a corner
- * makes you hunt for what it refers to, a finger on the actual button does not.
- * Its eyes follow the cursor, which is what makes it read as watching rather
- * than as a static sticker.
+ * makes you hunt for what it refers to, one beside the button does not. Its
+ * eyes follow the cursor, which is what makes it read as watching rather than
+ * as a static sticker.
+ *
+ * The pointing is left entirely to {@link GuideCursor}, whose hand travels to
+ * the control and taps it — two hands on screen at once read as clutter.
  */
 export function IdleAssistant({
   hint,
@@ -54,6 +56,9 @@ export function IdleAssistant({
 
     let timer: ReturnType<typeof setTimeout>;
     const restart = () => {
+      // Any activity sends it away immediately. Opening a card's "+" is
+      // activity, and the assistant stands exactly where that menu unfolds.
+      setVisible(false);
       clearTimeout(timer);
       timer = setTimeout(() => setVisible(true), idleDelay);
     };
@@ -151,64 +156,48 @@ export function IdleAssistant({
       style={{ left: placement.left, top: placement.top }}
     >
       <div
-        className={`flex items-center gap-2 ${
+        className={`flex items-center gap-2.5 ${
           pointsLeft ? "flex-row" : "flex-row-reverse"
         }`}
       >
-        <span
-          className="nudge shrink-0"
-          style={{
-            display: "inline-flex",
-            transform: pointsLeft ? "scaleX(-1)" : undefined,
-          }}
-        >
-          <WindowsHand />
-        </span>
+        <svg width={CHARACTER} height={CHARACTER} viewBox="0 0 78 78" aria-hidden>
+          <rect
+            x="6"
+            y="8"
+            width="66"
+            height="62"
+            rx="24"
+            fill="var(--panel-solid)"
+            stroke="var(--accent)"
+            strokeWidth="2.5"
+          />
+          <circle cx="28" cy="36" r="11" fill="var(--text)" />
+          <circle cx="52" cy="36" r="11" fill="var(--text)" />
+          <g ref={leftPupil} style={{ transition: "transform 90ms linear" }}>
+            <circle cx="28" cy="36" r="4.6" fill="var(--canvas)" />
+          </g>
+          <g ref={rightPupil} style={{ transition: "transform 90ms linear" }}>
+            <circle cx="52" cy="36" r="4.6" fill="var(--canvas)" />
+          </g>
+          {/* A small smile, so it reads as friendly rather than staring. */}
+          <path
+            d="M31 54c2.6 2.4 13.4 2.4 16 0"
+            stroke="var(--accent)"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            fill="none"
+          />
+        </svg>
 
-        <div
-          className={`flex items-center gap-2.5 ${
-            pointsLeft ? "flex-row" : "flex-row-reverse"
-          }`}
-        >
-          <svg width={CHARACTER} height={CHARACTER} viewBox="0 0 78 78" aria-hidden>
-            <rect
-              x="6"
-              y="8"
-              width="66"
-              height="62"
-              rx="24"
-              fill="var(--panel-solid)"
-              stroke="var(--accent)"
-              strokeWidth="2.5"
-            />
-            <circle cx="28" cy="36" r="11" fill="var(--text)" />
-            <circle cx="52" cy="36" r="11" fill="var(--text)" />
-            <g ref={leftPupil} style={{ transition: "transform 90ms linear" }}>
-              <circle cx="28" cy="36" r="4.6" fill="var(--canvas)" />
-            </g>
-            <g ref={rightPupil} style={{ transition: "transform 90ms linear" }}>
-              <circle cx="52" cy="36" r="4.6" fill="var(--canvas)" />
-            </g>
-            {/* A small smile, so it reads as friendly rather than staring. */}
-            <path
-              d="M31 54c2.6 2.4 13.4 2.4 16 0"
-              stroke="var(--accent)"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              fill="none"
-            />
-          </svg>
-
-          <div className="glass backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto max-w-[260px] rounded-xl px-3 py-2.5">
-            <p className="text-[13.5px] leading-snug text-text">{hint}</p>
-            <button
-              type="button"
-              onClick={onDismiss}
-              className="mt-1.5 text-[12.5px] text-faint underline transition-colors hover:text-text"
-            >
-              I&apos;ve got this
-            </button>
-          </div>
+        <div className="glass backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto max-w-[260px] rounded-xl px-3 py-2.5">
+          <p className="text-[13.5px] leading-snug text-text">{hint}</p>
+          <button
+            type="button"
+            onClick={onDismiss}
+            className="mt-1.5 text-[12.5px] text-faint underline transition-colors hover:text-text"
+          >
+            I&apos;ve got this
+          </button>
         </div>
       </div>
     </div>

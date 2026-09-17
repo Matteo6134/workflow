@@ -239,6 +239,16 @@ input[type="range"]::-moz-range-thumb {
   animation: nudge 1.1s ease-in-out infinite;
 }
 
+/* The control the ghost cursor taps visibly depresses, so the mime reads as a
+   click on THAT button rather than a ripple hanging in mid-air. */
+.guide-pressed {
+  transform: scale(0.92);
+  filter: brightness(1.35);
+  transition:
+    transform 120ms ease,
+    filter 120ms ease;
+}
+
 /* The ghost cursor's tap: one ring, once per arrival. */
 @keyframes guide-tap {
   0% {

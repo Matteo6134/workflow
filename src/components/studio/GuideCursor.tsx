@@ -101,7 +101,9 @@ export function GuideCursor({
           return;
         }
 
-        // Arrived: tap.
+        // Arrived: tap. The ring lands on the control, and the control
+        // itself depresses - a ripple floating in space does not read as a
+        // click on anything in particular.
         const ring = ringRef.current;
         if (ring) {
           ring.style.left = `${to.x}px`;
@@ -111,6 +113,9 @@ export function GuideCursor({
           void ring.offsetWidth;
           ring.classList.add("guide-tap");
         }
+
+        target.classList.add("guide-pressed");
+        setTimeout(() => target.classList.remove("guide-pressed"), 260);
 
         loop = setTimeout(() => {
           if (cancelled || !hand) return;
@@ -137,13 +142,13 @@ export function GuideCursor({
       <div
         ref={ringRef}
         data-guide-ring
-        className="pointer-events-none fixed z-[60] h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-accent opacity-0"
+        className="pointer-events-none fixed z-[70] h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-accent opacity-0"
         aria-hidden
       />
       <div
         ref={handRef}
         data-guide-cursor
-        className="pointer-events-none fixed left-0 top-0 z-[61] opacity-0 transition-opacity duration-300"
+        className="pointer-events-none fixed left-0 top-0 z-[71] opacity-0 transition-opacity duration-300"
         aria-hidden
       >
         <WindowsHand />

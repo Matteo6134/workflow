@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { useStudio } from "@/lib/scene/useStudio";
-import { isRenderable, EMPTY_SELECTION } from "@/lib/presets/composePrompt";
+import { isRenderable } from "@/lib/presets/composePrompt";
 import { createId } from "@/lib/scene/sceneItem";
 import {
   CARD_HEIGHT,
@@ -133,14 +133,6 @@ export function Studio() {
   /** True once the user has done anything at all. */
   const hasStarted = hasModel || steps.length > 0 || notes.length > 0;
 
-  const addStep = useCallback((step: StepId) => {
-    setSteps((current) =>
-      current.includes(step) ? current : [...current, step],
-    );
-    // Step aside for the card that is about to appear.
-    setGuideOpen(false);
-  }, []);
-
   const removeStep = useCallback((step: StepId) => {
     setSteps((current) => current.filter((item) => item !== step));
   }, []);
@@ -187,6 +179,35 @@ export function Studio() {
     }
     return out;
   }, [sizes, layout]);
+
+  /**
+   * Adds a step and parks it immediately to the right of the card whose "+"
+   * was used, so the new card appears where you were looking rather than in a
+   * fixed column that may be off-screen.
+   */
+  const addStepNextTo = useCallback(
+    (step: StepId, sourceId: string) => {
+      setSteps((current) =>
+        current.includes(step) ? current : [...current, step],
+      );
+
+      const source = rects[sourceId];
+      if (source) {
+        setPositions((current) =>
+          current[step]
+            ? current
+            : {
+                ...current,
+                [step]: { x: source.x + source.width + GAP, y: source.y },
+              },
+        );
+      }
+
+      // Step aside for the card that is about to appear.
+      setGuideOpen(false);
+    },
+    [rects],
+  );
 
   /**
    * The pipeline as wires. Everything staged feeds the description, which
@@ -309,62 +330,40 @@ export function Studio() {
     })),
   };
 
-  const renderGroup: CardActionGroup = {
-    label: "Render",
-    actions: [
-      {
-        id: "render",
-        label: studio.rendering ? "Rendering..." : "Render now",
-        hint: blockedReason ?? "Generate an image from the current view",
-        disabled: !canRender || studio.rendering,
-        onSelect: studio.render,
-      },
-      {
-        id: "inspect",
-        label: "See what the AI gets",
-        hint: "Inspect the control maps before spending a render",
-        disabled: !studio.captureReady,
-        onSelect: () => setPasses(studio.capturePreview()),
-      },
-    ],
-  };
-
   /**
-   * The actions that build the pipeline. Only steps not already on the board
-   * are offered, so the menu shrinks as the chain grows.
+   * The "+" does one thing: add the next step, placed beside this card.
+   *
+   * Everything else was moved out. Positioning is a double-click on the card,
+   * visibility is a button on the card itself, and the render controls live on
+   * the Render card. A menu that lists every capability of the app teaches
+   * none of them.
    */
-  const addGroup: CardActionGroup = {
-    label: "Add a step",
-    actions: [
-      ...STEP_ORDER.filter((step) => !steps.includes(step)).map((step) => ({
+  const addGroupFor = useCallback(
+    (sourceId: string): CardActionGroup => ({
+      label: "Add a step",
+      actions: STEP_ORDER.filter((step) => !steps.includes(step)).map((step) => ({
         id: `add-${step}`,
         label: STEP_LABELS[step].label,
         hint: STEP_LABELS[step].hint,
-        onSelect: () => addStep(step),
+        onSelect: () => addStepNextTo(step, sourceId),
       })),
-      {
-        id: "modify-3d",
-        label: "Modify in 3D",
-        hint: "Move and rotate parts with a gizmo",
-        disabled: !hasModel,
-        onSelect: () => setEditorOpen(true),
-      },
-    ],
-  };
+    }),
+    [steps, addStepNextTo],
+  );
 
   const tutorial: readonly TutorialStep[] = useMemo(
     () => [
       {
         id: "import",
         title: "Add your 3D file",
-        detail: "STL, OBJ or GLB. It keeps its real millimetre size.",
+        detail: "STL, OBJ or GLB. Double-click its card to place it in 3D.",
         done: hasModel,
         target: '[data-tour="add-3d"]',
       },
       {
         id: "describe",
         title: "Say what it is",
-        detail: "One plain sentence. Add the Describe step from any card's +.",
+        detail: "Use the + on your model card to add the Describe step.",
         done: hasLook,
         target: '[data-tour="card-plus"]',
       },
@@ -446,37 +445,7 @@ export function Studio() {
             onUnitChange={studio.setItemUnit}
             onMeasure={measureCard}
             menu={
-              <CardMenu
-                groups={[
-                  addGroup,
-                  perspectiveGroup,
-                  renderGroup,
-                  {
-                    label: "This object",
-                    actions: [
-                      {
-                        id: "position",
-                        label: "Position in 3D",
-                        hint: "Move and rotate with a gizmo",
-                        onSelect: () => openEditor(item.id),
-                      },
-                      {
-                        id: "visible",
-                        label: item.visible
-                          ? "Hide from render"
-                          : "Show in render",
-                        onSelect: () => studio.toggleVisible(item.id),
-                      },
-                      {
-                        id: "duplicate",
-                        label: "Duplicate",
-                        hint: "Place another copy alongside",
-                        onSelect: () => studio.duplicate(item.id),
-                      },
-                    ],
-                  },
-                ]}
-              />
+              <CardMenu groups={[addGroupFor(item.id)]} />
             }
             deleteMenu={
               <DeletePill
@@ -505,27 +474,7 @@ export function Studio() {
           onFocus={focusCard}
           onMeasure={measureCard}
             menu={
-              <CardMenu
-                groups={[
-                  addGroup,
-                  renderGroup,
-                  {
-                    label: "This step",
-                    actions: [
-                      {
-                        id: "clear-subject",
-                        label: "Clear the description",
-                        onSelect: () =>
-                          studio.setSelection({
-                            ...studio.selection,
-                            subject: "",
-                            extra: "",
-                          }),
-                      },
-                    ],
-                  },
-                ]}
-              />
+              <CardMenu groups={[addGroupFor(DESCRIBE)]} />
             }
             deleteMenu={
               <DeletePill
@@ -552,33 +501,7 @@ export function Studio() {
           onFocus={focusCard}
           onMeasure={measureCard}
             menu={
-              <CardMenu
-                groups={[
-                  addGroup,
-                  renderGroup,
-                  {
-                    label: "This step",
-                    actions: [
-                      {
-                        id: "clear-style",
-                        label: "Clear material, light and background",
-                        onSelect: () =>
-                          studio.setSelection({
-                            ...studio.selection,
-                            materialId: null,
-                            lightingId: null,
-                            sceneId: null,
-                          }),
-                      },
-                      {
-                        id: "reset-all",
-                        label: "Start the look over",
-                        onSelect: () => studio.setSelection(EMPTY_SELECTION),
-                      },
-                    ],
-                  },
-                ]}
-              />
+              <CardMenu groups={[addGroupFor(STYLE)]} />
             }
             deleteMenu={
               <DeletePill
@@ -610,13 +533,7 @@ export function Studio() {
           onFocus={focusCard}
           onMeasure={measureCard}
             menu={
-              <CardMenu
-                groups={[
-                  addGroup,
-                  perspectiveGroup,
-                  renderGroup,
-                ]}
-              />
+              <CardMenu groups={[addGroupFor(RENDER), perspectiveGroup]} />
             }
             deleteMenu={
               <DeletePill
@@ -645,12 +562,7 @@ export function Studio() {
           onFocus={focusCard}
           onMeasure={measureCard}
             menu={
-              <CardMenu
-                groups={[
-                  addGroup,
-                  renderGroup,
-                ]}
-              />
+              <CardMenu groups={[addGroupFor(RENDERS)]} />
             }
             deleteMenu={
               <DeletePill
